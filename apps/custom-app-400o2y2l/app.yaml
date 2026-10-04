@@ -1,0 +1,68 @@
+schema_version: 1
+title: "Crow's Foot"
+description: "A live dashboard of your pull requests in the corvicai GitHub organization,
+  grouped into sections defined by search queries."
+icon: sparkles
+accent_color: "#7C4DFF"
+
+routes:
+  - path: home
+    module: pages/home.js
+    title: "Dashboard"
+    home: true
+  - path: queries
+    module: pages/queries.js
+    title: "Sections & queries"
+
+styles:
+  - styles.css
+
+data:
+  - id: s
+    label: "Dashboard sections"
+    source: /table/s
+    produced_by:
+      kind: pipeline
+      pipeline: "Crow's Foot PR Dashboard (app)"
+      pipeline_id: "12753"
+  - id: p
+    label: "Pull requests"
+    source: /table/p
+    produced_by:
+      kind: pipeline
+      pipeline: "Crow's Foot PR Dashboard (app)"
+      pipeline_id: "12753"
+
+refresh:
+  mode: feature_view
+  seconds: 120
+
+catalogs:
+  - source: p
+    entity: pull request
+    key: pr_id
+    of:
+      section_id: {role: dimension, label: "Section"}
+      repo: {role: dimension, label: "Repository"}
+      author_login: {role: dimension, label: "Author"}
+      review_decision: {role: dimension, label: "Review decision"}
+      check_state: {role: dimension, label: "CI check state"}
+      updated_at: {role: time, label: "Last updated"}
+      additions: {role: measure, label: "Lines added"}
+      deletions: {role: measure, label: "Lines deleted"}
+      changed_files: {role: measure, label: "Files changed"}
+      comment_count: {role: measure, label: "Comments"}
+    dimensions:
+      - {name: section, label: "section", column: section_id}
+      - {name: repo, label: "repository", column: repo}
+      - {name: author, label: "author", column: author_login}
+      - {name: review_decision, label: "review decision", column: 
+          review_decision}
+    measures:
+      - {name: pull_requests, label: "pull requests", expr: {rows: true}, agg: 
+          count, adds: true}
+      - {name: lines_added, label: "lines added", expr: {col: additions}, agg: 
+          sum, adds: true}
+      - {name: lines_deleted, label: "lines deleted", expr: {col: deletions}, 
+          agg: sum, adds: true}
+engine: "1.32.0"
