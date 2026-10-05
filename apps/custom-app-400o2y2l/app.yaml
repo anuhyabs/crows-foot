@@ -24,14 +24,14 @@ data:
     produced_by:
       kind: pipeline
       pipeline: "Crow's Foot PR Dashboard (app)"
-      pipeline_id: "12753"
+      pipeline_id: "12804"
   - id: p
     label: "Pull requests"
     source: /table/p
     produced_by:
       kind: pipeline
       pipeline: "Crow's Foot PR Dashboard (app)"
-      pipeline_id: "12753"
+      pipeline_id: "12804"
 
 refresh:
   mode: feature_view
