@@ -108,7 +108,6 @@ export default async function render(ctx) {
   const info = stackInfo(prs);
   const total = sections.reduce((n, s) => n + Number(s.total_count ?? 0), 0);
   const needs = sections.filter((s) => ["needs-your-review", "changes-requested"].includes(s.section_id)).reduce((n, s) => n + Number(s.total_count ?? 0), 0);
-  const fetched = sections[0]?.fetched_at ? new Date(sections[0].fetched_at) : null;
 
   body.innerHTML = `
 <div class="toolbar">
@@ -118,8 +117,7 @@ export default async function render(ctx) {
   </div>
   <label class="search"><span>Filter</span><input id="filter" type="search" placeholder="Filter on screen…  ( / )" value="${esc(filterText)}" autocomplete="off"></label>
 </div>
-<div id="sections"></div>
-<p class="foot">${fetched && !Number.isNaN(fetched.getTime()) ? `Last synced ${esc(fetched.toLocaleString())} · ` : ""}Refreshes with the pipeline; the filter narrows what is already on screen.</p>`;
+<div id="sections"></div>`;
 
   const holder = body.querySelector("#sections");
 
