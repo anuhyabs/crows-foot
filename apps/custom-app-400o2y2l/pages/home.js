@@ -29,7 +29,7 @@ function reviewerChips(pr) {
     .map(
       (r) =>
         `<span class="rv ring-${RING[r.state] ?? "muted"}" title="${esc(r.login)}: ${esc(String(r.state).toLowerCase().replace("_", " "))}">${
-          r.avatar ? `<img src="${esc(r.avatar)}" alt="">` : initials(r.login)
+          r.avatar ? `<img src="${esc(r.avatar)}" alt="${esc(r.login)}" referrerpolicy="no-referrer">` : initials(r.login)
         }</span>`,
     );
   const owed = pr.requested
@@ -61,7 +61,7 @@ function row(pr, info, inStack) {
 <a class="pr${inStack ? " in-stack" : ""}" href="${esc(pr.url)}" target="_blank" rel="noopener" style="--stack:${color}">
   <span class="gutter">${unread ? '<span class="unread" title="Unseen activity"></span>' : ""}</span>
   <span class="state state-${state[0]}" title="${state[1]}"></span>
-  ${pr.author_avatar ? `<img class="avatar" src="${esc(pr.author_avatar)}" alt="" title="${esc(pr.author_login)}">` : `<span class="avatar"></span>`}
+  ${pr.author_avatar ? `<img class="avatar" src="${esc(pr.author_avatar)}" alt="${esc(pr.author_login)}" title="${esc(pr.author_login)}" referrerpolicy="no-referrer">` : `<span class="avatar"></span>`}
   <span class="pr-main">
     <span class="pr-title">${esc(pr.title)} ${stackMark}</span>
     <span class="pr-meta">${esc(pr.repo)} · #${pr.number} · ${esc(pr.author_login)} · <span class="add">+${fmtSize(pr.additions)}</span> <span class="del">−${fmtSize(pr.deletions)}</span> · ${pr.changed_files} file${pr.changed_files === 1 ? "" : "s"}${pr.mergeable === "CONFLICTING" ? ' · <span class="conflict">conflicts</span>' : ""}</span>
@@ -108,7 +108,6 @@ export default async function render(ctx) {
   const info = stackInfo(prs);
   const total = sections.reduce((n, s) => n + Number(s.total_count ?? 0), 0);
   const needs = sections.filter((s) => ["needs-your-review", "changes-requested"].includes(s.section_id)).reduce((n, s) => n + Number(s.total_count ?? 0), 0);
-  const fetched = sections[0]?.fetched_at ? new Date(sections[0].fetched_at) : null;
 
   body.innerHTML = `
 <div class="toolbar">
@@ -118,10 +117,32 @@ export default async function render(ctx) {
   </div>
   <label class="search"><span>Filter</span><input id="filter" type="search" placeholder="Filter on screen…  ( / )" value="${esc(filterText)}" autocomplete="off"></label>
 </div>
-<div id="sections"></div>
-<p class="foot">${fetched && !Number.isNaN(fetched.getTime()) ? `Last synced ${esc(fetched.toLocaleString())} · ` : ""}Refreshes with the pipeline; the filter narrows what is already on screen.</p>`;
+<div id="sections"></div>`;
 
   const holder = body.querySelector("#sections");
+
+  // Avatars are remote images; when one can't load, swap in the person's initials.
+  // `error` doesn't bubble, so listen in the capture phase once for every current and future <img>.
+  holder.addEventListener(
+    "error",
+    (e) => {
+      const img = e.target;
+      if (!(img instanceof HTMLImageElement)) return;
+      const who = img.title || img.alt || img.closest(".rv")?.title?.split(":")[0] || "";
+      const letters = who.replace(/[^A-Za-z0-9]/g, "").slice(0, 2).toUpperCase() || "?";
+      if (img.classList.contains("avatar")) {
+        const ph = document.createElement("span");
+        ph.className = "avatar";
+        ph.title = who;
+        ph.style.cssText = "display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--muted)";
+        ph.textContent = letters;
+        img.replaceWith(ph);
+      } else {
+        img.replaceWith(document.createTextNode(letters));
+      }
+    },
+    { capture: true, signal: ctx.signal },
+  );
 
   function paint() {
     const q = filterText.trim();

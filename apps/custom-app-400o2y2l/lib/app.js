@@ -24,7 +24,7 @@ export function renderChrome(content, current, viewer) {
   content.innerHTML = `
 <div id="app">
   <header id="top">
-    <div class="brand">${LOGO}<span class="wordmark">Crow's Foot</span><span class="org-chip">org:corvicai</span></div>
+    <div class="brand">${LOGO}<span class="wordmark">Crow's Foot</span></div>
     <nav id="tabs">${TABS.map((t) => `<a class="tab" href="${t.href}"${t.path === current ? ' aria-current="page"' : ""}>${t.label}</a>`).join("")}</nav>
     <div id="top-right">${viewer ? `<span class="viewer">${viewer.avatar ? `<img src="${esc(viewer.avatar)}" alt="">` : ""}${esc(viewer.login)}</span>` : ""}</div>
   </header>
