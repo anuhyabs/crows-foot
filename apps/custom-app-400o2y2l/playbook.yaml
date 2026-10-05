@@ -1,41 +1,41 @@
 schema_version: 1
 category: Apps
 tags:
-- app
-- blank
-- scratch
-- builder
+  - app
+  - blank
+  - scratch
+  - builder
 title: New App
-description: "A blank live web app to build from scratch. Tell its own agent what\
-  \ you want it to show and which data to use, and it designs the app and binds it\
-  \ to your room's data right here \u2014 then you refine it live."
+description: "A blank live web app to build from scratch. Tell its own agent what
+  you want it to show and which data to use, and it designs the app and binds it to
+  your room's data right here — then you refine it live."
 icon: sparkles
 accent_color: '#4DA6A0'
-example: "A live dashboard of the sales data in this room \u2014 total revenue and\
-  \ revenue by region up top, plus a table of recent deals."
+example: "A live dashboard of the sales data in this room — total revenue and revenue
+  by region up top, plus a table of recent deals."
 fields:
-- key: app_goal
-  label: What should this app do?
-  type: textarea
-  required: true
-  description: "Describe the app in plain language \u2014 what it should show and\
-    \ which of the room's data it should use. Its own agent turns that into a live\
-    \ web app (KPIs, charts, tables) bound to your data."
-  placeholder: "A live dashboard of the sales data in this room \u2014 total revenue\
-    \ and revenue by region up top, plus a table of recent deals."
+  - key: app_goal
+    label: What should this app do?
+    type: textarea
+    required: true
+    description: "Describe the app in plain language — what it should show and which
+      of the room's data it should use. Its own agent turns that into a live web app
+      (KPIs, charts, tables) bound to your data."
+    placeholder: "A live dashboard of the sales data in this room — total revenue
+      and revenue by region up top, plus a table of recent deals."
 message_template: "Build out this web app from scratch.\n\nWhat it should do:\n{{app_goal}}\n\
-  \nBefore building, ask me about anything this leaves open \u2014 how it should work,\
-  \ what it should save, and how it should look. Then design the app and bind it to\
-  \ this room's data by editing THIS app's own bundle files in place."
+  \nBefore building, ask me about anything this leaves open — how it should work,
+  what it should save, and how it should look. Then design the app and bind it to
+  this room's data by editing THIS app's own bundle files in place."
 steps:
-- Describe what you want the app to show
-- Answer a few questions about how it works and looks
-- Its agent designs the app and binds your data
-- Refine it live
-final_output: A live web app bound to your room's data that you can refine, reload
-  and share.
+  - Describe what you want the app to show
+  - Answer a few questions about how it works and looks
+  - Its agent designs the app and binds your data
+  - Refine it live
+final_output: A live web app bound to your room's data that you can refine, 
+  reload and share.
 pipeline:
-  id: '12804'
+  id: '12753'
 github:
   owner: anuhyabs
   repo: crows-foot
