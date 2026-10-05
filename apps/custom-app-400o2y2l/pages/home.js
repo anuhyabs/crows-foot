@@ -115,7 +115,6 @@ export default async function render(ctx) {
     <div class="kpi"><b>${needs}</b><span>need your attention</span></div>
     <div class="kpi"><b>${total}</b><span>across ${sections.length} sections</span></div>
   </div>
-  <label class="search"><span>Filter</span><input id="filter" type="search" placeholder="Filter on screen…  ( / )" value="${esc(filterText)}" autocomplete="off"></label>
 </div>
 <div id="sections"></div>`;
 
@@ -178,8 +177,9 @@ export default async function render(ctx) {
   }
   paint();
 
+  // The filter box was removed from the toolbar; keep this wiring null-safe in case it returns.
   const input = body.querySelector("#filter");
-  input.addEventListener(
+  input?.addEventListener(
     "input",
     () => {
       filterText = input.value;
@@ -203,12 +203,12 @@ export default async function render(ctx) {
     "keydown",
     (e) => {
       const tag = (e.target?.tagName ?? "").toLowerCase();
-      if (e.key === "/" && tag !== "input") {
+      if (input && e.key === "/" && tag !== "input") {
         e.preventDefault();
         input.focus();
       } else if (e.key === "r" && tag !== "input" && !e.metaKey && !e.ctrlKey) {
         ctx.reload();
-      } else if (e.key === "Escape" && tag === "input") {
+      } else if (input && e.key === "Escape" && tag === "input") {
         input.blur();
       }
     },
